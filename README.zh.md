@@ -107,15 +107,11 @@ learn-deepseek-harness/
 | 测试用 LLM mock | `packages/test-support/` |
 | Python SDK（子进程 JSON-RPC） | `python/sdk/` |
 
-## 与 learn-claude-code、learn-pi 的关系
+## 与 learn-pi 的关系
 
-三门课程，三种哲学，同一个循环：
 
-- **learn-claude-code**：机制*造进* harness——权限、子代理、团队是一等系统（Python、Anthropic API）。
 - **learn-pi**：机制*推出*到扩展——薄薄的事件驱动内核（TypeScript、TypeBox、faux provider）。
 - **learn-deepseek-harness**（本课程）：机制*组合自插件*——组合运行时之上没有特权核心，记忆是事件溯源的，每个会话同时是一份确定性测试（TypeScript、Cordis 概念）。
-
-三门连读，你就画完了 agent harness 工程的整个设计空间。
 
 ## 许可
 
