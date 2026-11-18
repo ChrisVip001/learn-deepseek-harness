@@ -25,13 +25,19 @@ type Dispose = () => void;
 type Listener = (payload: unknown) => void;
 
 class Context {
-	private listeners = new Map<string, Listener[]>();
-	private services = new Map<string, unknown>();
+	private listeners: Map<string, Listener[]>;
+	private services: Map<string, unknown>;
 	private disposers: Dispose[] = [];
 	private label: string;
 
-	constructor(label: string) {
+	constructor(label: string, parent?: Context) {
 		this.label = label;
+		// Child contexts share the parent's event bus and service registry,
+		// so events emitted on root reach plugin listeners and services
+		// provided by one plugin are visible to the others. The disposers
+		// list stays private: each plugin still only undoes its own work.
+		this.listeners = parent?.listeners ?? new Map();
+		this.services = parent?.services ?? new Map();
 	}
 
 	/** Register a listener; registration IS a side effect - it returns its own undo. */
@@ -89,7 +95,7 @@ class Runtime {
 
 	/** Install a plugin into its own context. Uninstalling disposes the context. */
 	use(name: string, plugin: Plugin): void {
-		const ctx = new Context(`plugin:${name}`);
+		const ctx = new Context(`plugin:${name}`, this.root);
 		plugin(ctx);
 		this.plugins.push({ name, ctx });
 		console.log(`\x1b[32m+ plugin '${name}' loaded\x1b[0m`);
